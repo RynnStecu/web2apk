@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/sha256"
 	"flag"
 	"fmt"
 	"io"
@@ -12,9 +11,6 @@ import (
 	"strings"
 )
 
-// Hash dari key asli default "kyu?-sayang-hasna"
-const ORIGINAL_KEY_HASH = "4b78595f101dd1ff998cf588604c33c20218568c45a2a10dc5e6a3b6866befc6"
-
 type Config struct {
 	URL         string
 	AppName     string
@@ -22,21 +18,16 @@ type Config struct {
 	OutputDir   string
 	IconPath    string
 	BuildDir    string
-	Key         string
 }
 
 func main() {
 	var cfg Config
-	flag.StringVar(&cfg.Key, "key", "kyu?-sayang-hasna", "Key Lisensi Akses")
 	flag.StringVar(&cfg.URL, "url", "", "URL Website yang akan diubah menjadi APK")
 	flag.StringVar(&cfg.AppName, "name", "MyWebApp", "Nama Aplikasi Android")
 	flag.StringVar(&cfg.PackageName, "package", "com.mycompany.webapp", "Package Name Android")
 	flag.StringVar(&cfg.OutputDir, "out", ".", "Folder output APK")
 	flag.StringVar(&cfg.IconPath, "icon", "", "Path ke file gambar ikon aplikasi (.png / .jpg)")
 	flag.Parse()
-
-	// Cek Integrity / Proteksi Recode: Key harus sesuai dengan key asli
-	verifyAntiRecode(cfg.Key)
 
 	if cfg.URL == "" {
 		fmt.Println("\n❌ Error: Flag -url wajib diisi!")
@@ -116,20 +107,6 @@ func main() {
 	fmt.Println("🎉 BERHASIL! APK telah selesai dibuat.")
 	fmt.Printf("📌 Lokasi File: %s\n", finalAPKPath)
 	fmt.Println("==================================================")
-}
-
-func verifyAntiRecode(inputKey string) {
-	h := sha256.New()
-	h.Write([]byte(inputKey))
-	hashResult := fmt.Sprintf("%x", h.Sum(nil))
-
-	// Jika ada orang yang mencoba merubah/mengosongkan/mengedit key default di source code/recode
-	if hashResult != ORIGINAL_KEY_HASH {
-		fmt.Println("\n❌ DETEKSI RECODE / MODIFIKASI ILEGAL!")
-		fmt.Println("Aplikasi ini dilindungi Anti-Recode Protection!")
-		fmt.Println("Penggunaan atau pengubahan key tanpa izin pembuat asli dilarang keras.")
-		os.Exit(1)
-	}
 }
 
 func generateSourceFiles(cfg Config) error {
