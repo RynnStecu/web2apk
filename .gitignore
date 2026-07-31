@@ -1,0 +1,28 @@
+# Temporary / Build directories
+bin/
+gen/
+src/
+res/
+AndroidManifest.xml
+classes.dex
+app-unsigned.apk
+debug.keystore
+
+# Compiled Binaries & Executables
+web2apk
+web2apk.exe
+*.apk
+
+# Temporary files
+*.tmp
+*.log
+scratch/
+.acside/
+.gradle/
+test.jpg
+
+# OS / Editor junk
+.DS_Store
+*.swp
+*~
+EOF
